@@ -1,0 +1,24 @@
+Source: flatpak-hybris
+Maintainer: Eugenio Paolantonio (g7) <me@medesimo.eu>
+Section: misc
+Priority: optional
+Build-Depends: debhelper (>= 13)
+Standards-Version: 4.5.0.3
+Vcs-Browser: https://github.com/droidian/flatpak-hybris
+Vcs-Git: https://github.com/droidian/flatpak-hybris.git
+
+Package: flatpak-hybris
+Architecture: all
+Pre-Depends: flatpak
+Depends: ${misc:Depends},
+         flatpak-extension-gl-hybris,
+         libc-bin,
+         dpkg-dev,
+Recommends: flatpak-extension-gl-hybris-tls-padding
+Description: Simple wrapper that prepares flatpaks for running with hybris extensions
+ This package contains a simple wrapper that prepares flatpaks for running
+ with the hybris org.freedesktop.Platform.GL runtime extension.
+ .
+ If you have this package installed, flatpaks will run with libhybris
+ automatically.
+

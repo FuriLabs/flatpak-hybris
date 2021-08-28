@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+configure() {
+	if ! [ -e "/usr/bin/flatpak.real" ]; then
+		dpkg-divert \
+			--rename \
+			--package flatpak-hybris \
+			--divert "/usr/bin/flatpak.real" \
+			--add "/usr/bin/flatpak"
+		ln -s "/usr/lib/flatpak-hybris/flatpak-hybris.sh" "/usr/bin/flatpak"
+	fi
+}
+
+case "$1" in
+	"configure")
+		configure
+		;;
+esac

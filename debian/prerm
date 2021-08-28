@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+remove() {
+	if [ -e "/usr/bin/flatpak.real" ]; then
+		rm -f "/usr/bin/flatpak"
+		dpkg-divert \
+			--rename \
+			--package flatpak-hybris \
+			--divert "/usr/bin/flatpak.real" \
+			--remove "/usr/bin/flatpak"
+	fi
+}
+
+case "$1" in
+	"remove")
+		remove
+		;;
+esac
