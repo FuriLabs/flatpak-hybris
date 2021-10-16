@@ -2,8 +2,29 @@
 
 FLATPAK="/usr/bin/flatpak.real"
 
+error() {
+	echo "E: $@" >&2
+	exit 1
+}
+
 # Get triplet
-TRIPLET=$(dpkg-architecture -qDEB_HOST_MULTIARCH 2> /dev/null)
+case "$(dpkg --print-architecture)" in
+	"amd64")
+		TRIPLET="x86_64-linux-gnu"
+		;;
+	"i386")
+		TRIPLET="i386-linux-gnu"
+		;;
+	"arm64")
+		TRIPLET="aarch64-linux-gnu"
+		;;
+	"armhf")
+		TRIPLET="arm-linux-gnueabihf"
+		;;
+	*)
+		error "Unable to obtain triplet"
+		;;
+esac
 
 # Get libdir
 if [ $(getconf LONG_BIT) == 32 ]; then
