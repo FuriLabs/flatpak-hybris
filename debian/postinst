@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 configure() {
@@ -9,6 +9,15 @@ configure() {
 			--divert "/usr/bin/flatpak.real" \
 			--add "/usr/bin/flatpak"
 		ln -s "/usr/lib/flatpak-hybris/flatpak-hybris.sh" "/usr/bin/flatpak"
+	fi
+
+	# Force bwrap to be setuid root. This *can* be a security risk
+	# if a vulnerability is found in bubblewrap itself.
+	# However, this breaks some Droidian devices as well as the hybris
+	# support, so the trade-off for now is to force the bwrap
+	# executable to be setuid root.
+	if ! dpkg-statoverride --list /usr/bin/bwrap &> /dev/null; then
+		dpkg-statoverride --update --add root root 4755 /usr/bin/bwrap
 	fi
 }
 

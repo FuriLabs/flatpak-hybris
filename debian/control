@@ -9,7 +9,8 @@ Vcs-Git: https://github.com/droidian/flatpak-hybris.git
 
 Package: flatpak-hybris
 Architecture: all
-Pre-Depends: flatpak
+Pre-Depends: flatpak,
+             bubblewrap,
 Depends: ${misc:Depends},
          flatpak-extension-gl-hybris,
          libc-bin,

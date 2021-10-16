@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 remove() {
@@ -9,6 +9,10 @@ remove() {
 			--package flatpak-hybris \
 			--divert "/usr/bin/flatpak.real" \
 			--remove "/usr/bin/flatpak"
+	fi
+
+	if dpkg-statoverride --list /usr/bin/bwrap &> /dev/null; then
+		dpkg-statoverride --quiet --remove /usr/bin/bwrap
 	fi
 }
 
