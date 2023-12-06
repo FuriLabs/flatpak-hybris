@@ -49,6 +49,7 @@ if [[ "$@" =~ 'run ' ]]; then
 		--filesystem=/apex:ro \
 		--filesystem=/android:ro \
 		--device=all \
+		--env=GDK_DEBUG=gl-disable \
 		--env=HYBRIS_EGLPLATFORM_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris \
 		--env=HYBRIS_LINKER_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris/linker \
 		--env=HYBRIS_LD_LIBRARY_PATH=${HYBRIS_LD_LIBRARY_PATH} \
