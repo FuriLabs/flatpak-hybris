@@ -48,7 +48,10 @@ if [[ "$@" =~ 'run ' ]]; then
 		--filesystem=/odm:ro \
 		--filesystem=/apex:ro \
 		--filesystem=/android:ro \
+		--filesystem=/mnt:ro \
+		--filesystem=/data:ro \
 		--device=all \
+		--env=LD_PRELOAD=libgtk6216workaround.so \
 		--env=HYBRIS_EGLPLATFORM_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris \
 		--env=HYBRIS_LINKER_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris/linker \
 		--env=HYBRIS_LD_LIBRARY_PATH=${HYBRIS_LD_LIBRARY_PATH} \
