@@ -39,7 +39,7 @@ fi
 if [[ "$@" =~ 'run ' ]]; then
 	# Flatpak should be ran, ensure we attach our own arguments
 
-	if ! [[ "$(flatpak info $(echo $@ | rev | cut -d ' ' -f 1 | rev) | grep -E 'org.kde.Sdk' | cut -d '/' -f 3)" =~ 6.* ]]; then
+	if ! [[ "$(flatpak info $(echo $@ | rev | cut -d ' ' -f 1 | rev) | grep -E 'org.kde.Sdk' | cut -d '/' -f 3)" =~ 6.*|5.* ]]; then
 		# Ensure we use the hybris extension
 		export FLATPAK_GL_DRIVERS="hybris"
 	fi
