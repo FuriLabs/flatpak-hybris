@@ -42,6 +42,16 @@ fi
 if [[ "$@" =~ 'run ' ]]; then
 	# Flatpak should be ran, ensure we attach our own arguments
 
+	args=("$@")
+	# @@u @@ are supposed to represent that everything after these arguments are URIs supposed to be passed in to file forwarding
+	# but there are cases that these are specified but the app is not giving any paths. in these cases app will just refuse to start
+	# handle the case where these two args are given but app is not requesting anything
+	if [ "${args[-2]}" = "@@u" ] && [ "${args[-1]}" = "@@" ]; then
+		unset 'args[-1]'
+		unset 'args[-1]'
+		set -- "${args[@]}"
+	fi
+
 	if ! [[ "$(flatpak info $(echo $@ | rev | cut -d ' ' -f 1 | rev) | grep -E 'org.kde.Sdk' | cut -d '/' -f 3)" =~ 6.*|5.* ]]; then
 		# Ensure we use the hybris extension
 		export FLATPAK_GL_DRIVERS="hybris"
