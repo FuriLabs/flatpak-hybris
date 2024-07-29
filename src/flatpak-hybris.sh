@@ -26,6 +26,9 @@ case "$(dpkg --print-architecture)" in
 		;;
 esac
 
+[ -e /run/user/${UID}/wayland-0 ] && \
+	EXTRA_FLAGS="--filesystem=/run/user/${UID}/wayland-0:ro"
+
 # Get libdir
 if [ $(getconf LONG_BIT) == 32 ]; then
 	LIBDIR="lib"
@@ -58,6 +61,7 @@ if [[ "$@" =~ 'run ' ]]; then
 		--env=HYBRIS_LINKER_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris/linker \
 		--env=HYBRIS_LD_LIBRARY_PATH=${HYBRIS_LD_LIBRARY_PATH} \
 		--env=LD_LIBRARY_PATH=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris-egl:/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR} \
+		${EXTRA_FLAGS} \
 		$@
 else
 	# Pass-through to the real executable
