@@ -52,7 +52,7 @@ if [[ "$@" =~ 'run ' ]]; then
 		set -- "${args[@]}"
 	fi
 
-	if ! [[ "$(flatpak info $(echo $@ | rev | cut -d ' ' -f 1 | rev) | grep -E 'org.kde.Sdk' | cut -d '/' -f 3)" =~ 6.*|5.* ]]; then
+	if ! [[ "$(flatpak info $(echo $@ | rev | cut -d ' ' -f 1 | rev) | grep -E 'org.kde.Sdk' | cut -d '/' -f 3)" =~ 6.* ]]; then
 		# Ensure we use the hybris extension
 		export FLATPAK_GL_DRIVERS="hybris"
 	fi
