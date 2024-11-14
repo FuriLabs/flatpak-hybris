@@ -27,7 +27,9 @@ case "$(dpkg --print-architecture)" in
 esac
 
 [ -e /run/user/${UID}/wayland-0 ] && \
-	EXTRA_FLAGS="--filesystem=/run/user/${UID}/wayland-0:ro"
+	EXTRA_FLAGS="${EXTRA_FLAGS} --filesystem=/run/user/${UID}/wayland-0:ro"
+[ -e /run/dbus/system_bus_socket ] && \
+	EXTRA_FLAGS="${EXTRA_FLAGS} --filesystem=/run/dbus/system_bus_socket:ro"
 
 # Get libdir
 if [ $(getconf LONG_BIT) == 32 ]; then
