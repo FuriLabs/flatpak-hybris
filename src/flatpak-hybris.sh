@@ -7,6 +7,11 @@ error() {
 	exit 1
 }
 
+# Detect if script is called by completion function
+if [[ "$COMP_LINE" != "" || "$1" == "complete" ]]; then
+	exec "$FLATPAK" "$@"
+fi
+
 # Get triplet
 case "$(dpkg --print-architecture)" in
 	"amd64")
