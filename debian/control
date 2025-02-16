@@ -1,11 +1,11 @@
 Source: flatpak-hybris
-Maintainer: Eugenio Paolantonio (g7) <me@medesimo.eu>
+Maintainer: Bardia Moshiri <bardia@furilabs.com>
 Section: misc
 Priority: optional
-Build-Depends: debhelper (>= 13)
-Standards-Version: 4.5.0.3
-Vcs-Browser: https://github.com/droidian/flatpak-hybris
-Vcs-Git: https://github.com/droidian/flatpak-hybris.git
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Vcs-Browser: https://github.com/furilabs/flatpak-hybris
+Vcs-Git: https://github.com/furilabs/flatpak-hybris.git
 
 Package: flatpak-hybris
 Architecture: all

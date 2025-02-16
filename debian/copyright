@@ -1,13 +1,15 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: flatpak-hybris
-Source: https://github.com/droidian/flatpak-hybris
+Source: https://github.com/furilabs/flatpak-hybris
 
 Files: *
 Copyright: 2021 Eugenio Paolantonio (g7) <me@medesimo.eu>
+           2025 Bardia Moshiri <bardia@furilabs.com>
 License: BSD-3-clause
 
 Files: debian/*
 Copyright: 2020 Eugenio Paolantonio (g7) <me@medesimo.eu>
+           2025 Bardia Moshiri <bardia@furilabs.com>
 License: BSD-3-clause
 
 License: BSD-3-clause
