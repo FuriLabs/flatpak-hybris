@@ -21,6 +21,9 @@ remove() {
 	fi
 
 	if dpkg-statoverride --list /usr/bin/bwrap &> /dev/null; then
+		[ -u "/usr/bin/bwrap" ] && chmod -s /usr/bin/bwrap
+		[ -u "/usr/bin/bwrap.real" ] && chmod -s /usr/bin/bwrap.real
+
 		dpkg-statoverride --quiet --remove /usr/bin/bwrap
 	fi
 }
