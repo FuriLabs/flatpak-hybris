@@ -2,29 +2,35 @@
 set -e
 
 configure() {
-	if ! [ -e "/usr/bin/flatpak.real" ]; then
+	if ! dpkg-divert --list | grep -q /usr/bin/flatpak; then
+		if [ -e "/usr/bin/flatpak.real" ]; then
+			rm -f "/usr/bin/flatpak.real"
+		fi
+
 		dpkg-divert \
 			--rename \
 			--package flatpak-hybris \
 			--divert "/usr/bin/flatpak.real" \
 			--add "/usr/bin/flatpak"
-		ln -s "/usr/lib/flatpak-hybris/flatpak-hybris.sh" "/usr/bin/flatpak"
+		ln -sf "/usr/lib/flatpak-hybris/flatpak-hybris.sh" "/usr/bin/flatpak"
 	fi
 
-	if ! [ -e "/usr/bin/bwrap.real" ]; then
+	if ! dpkg-divert --list | grep -q /usr/bin/bwrap; then
+		if [ -e "/usr/bin/bwrap.real" ]; then
+			rm -f "/usr/bin/bwrap.real"
+		fi
+
 		dpkg-divert \
 			--rename \
 			--package flatpak-hybris \
 			--divert "/usr/bin/bwrap.real" \
 			--add "/usr/bin/bwrap"
-		ln -s "/usr/lib/flatpak-hybris/bwrapwrapper.sh" "/usr/bin/bwrap"
+		ln -sf "/usr/lib/flatpak-hybris/bwrapwrapper.sh" "/usr/bin/bwrap"
 	fi
 
-	# remove the old bwrap setuid state override now that we have a bwrap wrapper
 	if dpkg-statoverride --list /usr/bin/bwrap &> /dev/null; then
-		[ -u "/usr/bin/bwrap" ] && chmod -s /usr/bin/bwrap
-		[ -u "/usr/bin/bwrap.real" ] && chmod -s /usr/bin/bwrap.real
-
+		[ -e "/usr/bin/bwrap" ] && [ -u "/usr/bin/bwrap" ] && chmod -s /usr/bin/bwrap
+		[ -e "/usr/bin/bwrap.real" ] && [ -u "/usr/bin/bwrap.real" ] && chmod -s /usr/bin/bwrap.real
 		dpkg-statoverride --quiet --remove /usr/bin/bwrap
 	fi
 }

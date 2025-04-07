@@ -2,28 +2,31 @@
 set -e
 
 remove() {
-	if [ -e "/usr/bin/flatpak.real" ]; then
-		rm -f "/usr/bin/flatpak"
-		dpkg-divert \
-			--rename \
-			--package flatpak-hybris \
-			--divert "/usr/bin/flatpak.real" \
-			--remove "/usr/bin/flatpak"
+	if dpkg-divert --list | grep -q /usr/bin/flatpak; then
+		if [ -e "/usr/bin/flatpak.real" ]; then
+			rm -f "/usr/bin/flatpak"
+			dpkg-divert \
+				--rename \
+				--package flatpak-hybris \
+				--divert "/usr/bin/flatpak.real" \
+				--remove "/usr/bin/flatpak"
+		fi
 	fi
 
-	if [ -e "/usr/bin/bwrap.real" ]; then
-		rm -f "/usr/bin/bwrap"
-		dpkg-divert \
-			--rename \
-			--package flatpak-hybris \
-			--divert "/usr/bin/bwrap.real" \
-			--remove "/usr/bin/bwrap"
+	if dpkg-divert --list | grep -q /usr/bin/bwrap; then
+		if [ -e "/usr/bin/bwrap.real" ]; then
+			rm -f "/usr/bin/bwrap"
+			dpkg-divert \
+				--rename \
+				--package flatpak-hybris \
+				--divert "/usr/bin/bwrap.real" \
+				--remove "/usr/bin/bwrap"
+		fi
 	fi
 
 	if dpkg-statoverride --list /usr/bin/bwrap &> /dev/null; then
-		[ -u "/usr/bin/bwrap" ] && chmod -s /usr/bin/bwrap
-		[ -u "/usr/bin/bwrap.real" ] && chmod -s /usr/bin/bwrap.real
-
+		[ -e "/usr/bin/bwrap" ] && [ -u "/usr/bin/bwrap" ] && chmod -s /usr/bin/bwrap
+		[ -e "/usr/bin/bwrap.real" ] && [ -u "/usr/bin/bwrap.real" ] && chmod -s /usr/bin/bwrap.real
 		dpkg-statoverride --quiet --remove /usr/bin/bwrap
 	fi
 }
