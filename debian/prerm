@@ -15,7 +15,8 @@ remove() {
 
 	if dpkg-divert --list | grep -q /usr/bin/bwrap; then
 		if [ -e "/usr/bin/bwrap.real" ]; then
-			rm -f "/usr/bin/bwrap"
+			cp -a "/usr/bin/bwrap.real" "/usr/bin/bwrap"
+			rm -f "/usr/bin/bwrap.real"
 			dpkg-divert \
 				--rename \
 				--package flatpak-hybris \
