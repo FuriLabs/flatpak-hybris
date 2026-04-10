@@ -31,10 +31,11 @@ case "$(dpkg --print-architecture)" in
 		;;
 esac
 
+EXTRA_FLAGS=()
 [ -e /run/user/${UID}/wayland-0 ] && \
-	EXTRA_FLAGS="${EXTRA_FLAGS} --filesystem=/run/user/${UID}/wayland-0:ro"
+	EXTRA_FLAGS+=("--filesystem=/run/user/${UID}/wayland-0:ro")
 [ -e /run/dbus/system_bus_socket ] && \
-	EXTRA_FLAGS="${EXTRA_FLAGS} --filesystem=/run/dbus/system_bus_socket:ro"
+	EXTRA_FLAGS+=("--filesystem=/run/dbus/system_bus_socket:ro")
 
 # Get libdir
 if [ $(getconf LONG_BIT) == 32 ]; then
@@ -78,9 +79,9 @@ if [[ "$@" =~ 'run ' ]]; then
 		--env=HYBRIS_LINKER_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris/linker \
 		--env=HYBRIS_LD_LIBRARY_PATH=${HYBRIS_LD_LIBRARY_PATH} \
 		--env=LD_LIBRARY_PATH=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris-egl:/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR} \
-		${EXTRA_FLAGS} \
-		$@
+		"${EXTRA_FLAGS[@]}" \
+		"${args[@]}"
 else
 	# Pass-through to the real executable
-	exec ${FLATPAK} $@
+	exec "${FLATPAK}" "$@"
 fi
