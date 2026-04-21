@@ -70,7 +70,21 @@ fi
 
 if [[ -n "$app_id" ]]; then
 	sdk=$("$FLATPAK" info "$app_id" 2>/dev/null | awk -F': *' '/^[[:space:]]*Sdk:/ {print $2}')
-	if [[ "$sdk" != org.kde.Sdk/*/6.* ]]; then
+	SDK_SKIP_PATTERNS=(
+		"org.kde.Sdk/*/6.*"
+	)
+
+	override_gl_driver=1
+	for pattern in "${SDK_SKIP_PATTERNS[@]}"; do
+		# Glob matching for SDK
+		# shellcheck disable=SC2053
+		if [[ "$sdk" == $pattern ]]; then
+			override_gl_driver=0
+			break
+		fi
+	done
+
+	if [[ $override_gl_driver -eq 1 ]]; then
 		export FLATPAK_GL_DRIVERS="hybris"
 	fi
 fi
