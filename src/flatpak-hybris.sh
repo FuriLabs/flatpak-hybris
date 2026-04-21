@@ -3,7 +3,7 @@
 FLATPAK="/usr/bin/flatpak.real"
 
 error() {
-	echo "E: $@" >&2
+	echo "E: $*" >&2
 	exit 1
 }
 
@@ -38,7 +38,7 @@ EXTRA_FLAGS=()
 	EXTRA_FLAGS+=("--filesystem=/run/dbus/system_bus_socket:ro")
 
 # Get libdir
-if [ $(getconf LONG_BIT) == 32 ]; then
+if [ "$(getconf LONG_BIT)" == 32 ]; then
 	LIBDIR="lib"
 else
 	LIBDIR="lib64"
