@@ -47,41 +47,47 @@ fi
 [ -z "${HYBRIS_LD_LIBRARY_PATH}" ] && \
 	HYBRIS_LD_LIBRARY_PATH="/system/${LIBDIR}:/vendor/${LIBDIR}:/odm/${LIBDIR}"
 
-if [[ "$@" =~ 'run ' ]]; then
-	# Flatpak should be ran, ensure we attach our own arguments
+subcommand=""
+app_id=""
+seen_subcommand=0
 
-	args=("$@")
-	# @@u @@ are supposed to represent that everything after these arguments are URIs supposed to be passed in to file forwarding
-	# but there are cases that these are specified but the app is not giving any paths. in these cases app will just refuse to start
-	# handle the case where these two args are given but app is not requesting anything
-	if [ "${args[-2]}" = "@@u" ] && [ "${args[-1]}" = "@@" ]; then
-		unset 'args[-1]'
-		unset 'args[-1]'
-		set -- "${args[@]}"
-	fi
+for arg in "$@"; do
+    if [[ "$arg" == -* ]]; then
+        continue
+    fi
+    if [[ $seen_subcommand -eq 0 ]]; then
+        subcommand="$arg"
+        seen_subcommand=1
+        continue
+    fi
+    app_id="$arg"
+    break
+done
 
-	if ! [[ "$(flatpak info $(echo $@ | rev | cut -d ' ' -f 1 | rev) | grep -E 'org.kde.Sdk' | cut -d '/' -f 3)" =~ 6.* ]]; then
-		# Ensure we use the hybris extension
+if [[ "$subcommand" != "run" ]]; then
+    exec "$FLATPAK" "$@"
+fi
+
+if [[ -n "$app_id" ]]; then
+	sdk=$("$FLATPAK" info "$app_id" 2>/dev/null | awk -F': *' '/^[[:space:]]*Sdk:/ {print $2}')
+	if [[ "$sdk" != org.kde.Sdk/*/6.* ]]; then
 		export FLATPAK_GL_DRIVERS="hybris"
 	fi
-
-	exec ${FLATPAK} \
-		--filesystem=/system:ro \
-		--filesystem=/vendor:ro \
-		--filesystem=/odm:ro \
-		--filesystem=/apex:ro \
-		--filesystem=/android:ro \
-		--filesystem=/mnt:ro \
-		--filesystem=/data:ro \
-		--device=all \
-		--env=LD_PRELOAD=libtls-padding.so:libglesshadercache.so \
-		--env=HYBRIS_EGLPLATFORM_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris \
-		--env=HYBRIS_LINKER_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris/linker \
-		--env=HYBRIS_LD_LIBRARY_PATH=${HYBRIS_LD_LIBRARY_PATH} \
-		--env=LD_LIBRARY_PATH=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris-egl:/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR} \
-		"${EXTRA_FLAGS[@]}" \
-		"${args[@]}"
-else
-	# Pass-through to the real executable
-	exec "${FLATPAK}" "$@"
 fi
+
+exec ${FLATPAK} \
+	--filesystem=/system:ro \
+	--filesystem=/vendor:ro \
+	--filesystem=/odm:ro \
+	--filesystem=/apex:ro \
+	--filesystem=/android:ro \
+	--filesystem=/mnt:ro \
+	--filesystem=/data:ro \
+	--device=all \
+	--env=LD_PRELOAD=libtls-padding.so:libglesshadercache.so \
+	--env=HYBRIS_EGLPLATFORM_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris \
+	--env=HYBRIS_LINKER_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris/linker \
+	--env=HYBRIS_LD_LIBRARY_PATH=${HYBRIS_LD_LIBRARY_PATH} \
+	--env=LD_LIBRARY_PATH=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris-egl:/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR} \
+	"${EXTRA_FLAGS[@]}" \
+	"$@"
