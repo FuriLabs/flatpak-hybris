@@ -28,11 +28,13 @@ configure() {
 		ln -sf "/usr/lib/flatpak-hybris/bwrapwrapper.sh" "/usr/bin/bwrap"
 	fi
 
-	[ -e "/usr/bin/bwrap" ] && chmod u+s /usr/bin/bwrap
-	[ -e "/usr/bin/bwrap.real" ] && chmod u+s /usr/bin/bwrap.real
+	# remove setuid bits
+	[ -e "/usr/bin/bwrap" ] && chmod u-s /usr/bin/bwrap
+	[ -e "/usr/bin/bwrap.real" ] && chmod u-s /usr/bin/bwrap.real
 
-	if ! dpkg-statoverride --list /usr/bin/bwrap &> /dev/null; then
-		dpkg-statoverride --add --update root root 4755 /usr/bin/bwrap
+	# remove dpkg statoverride forcing setuid
+	if dpkg-statoverride --list /usr/bin/bwrap &> /dev/null; then
+		dpkg-statoverride --quiet --remove /usr/bin/bwrap
 	fi
 }
 
