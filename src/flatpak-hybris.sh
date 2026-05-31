@@ -47,40 +47,42 @@ fi
 [ -z "${HYBRIS_LD_LIBRARY_PATH}" ] && \
 	HYBRIS_LD_LIBRARY_PATH="/system/${LIBDIR}:/vendor/${LIBDIR}:/odm/${LIBDIR}"
 
+SDK_SKIP_PATTERNS=( )
 subcommand=""
 app_id=""
 seen_subcommand=0
 
 for arg in "$@"; do
-    if [[ "$arg" == -* ]]; then
-        continue
-    fi
-    if [[ $seen_subcommand -eq 0 ]]; then
-        subcommand="$arg"
-        seen_subcommand=1
-        continue
-    fi
-    app_id="$arg"
-    break
+	if [[ "$arg" == -* ]]; then
+		continue
+	fi
+	if [[ $seen_subcommand -eq 0 ]]; then
+		subcommand="$arg"
+		seen_subcommand=1
+		continue
+	fi
+	app_id="$arg"
+	break
 done
 
 if [[ "$subcommand" != "run" ]]; then
-    exec "$FLATPAK" "$@"
+	exec "$FLATPAK" "$@"
 fi
 
 if [[ -n "$app_id" ]]; then
-	sdk=$("$FLATPAK" info "$app_id" 2>/dev/null | awk -F': *' '/^[[:space:]]*Sdk:/ {print $2}')
-	SDK_SKIP_PATTERNS=( )
-
 	override_gl_driver=1
-	for pattern in "${SDK_SKIP_PATTERNS[@]}"; do
-		# Glob matching for SDK
-		# shellcheck disable=SC2053
-		if [[ "$sdk" == $pattern ]]; then
-			override_gl_driver=0
-			break
-		fi
-	done
+
+	if [ "${#SDK_SKIP_PATTERNS[@]}" -gt 0 ]; then
+		sdk=$("$FLATPAK" info "$app_id" 2>/dev/null | awk -F': *' '/^[[:space:]]*Sdk:/ {print $2}')
+		for pattern in "${SDK_SKIP_PATTERNS[@]}"; do
+			# Glob matching for SDK
+			# shellcheck disable=SC2053
+			if [[ "$sdk" == $pattern ]]; then
+				override_gl_driver=0
+				break
+			fi
+		done
+	fi
 
 	if [[ $override_gl_driver -eq 1 ]]; then
 		export FLATPAK_GL_DRIVERS="hybris"
