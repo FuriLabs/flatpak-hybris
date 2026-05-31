@@ -70,9 +70,7 @@ fi
 
 if [[ -n "$app_id" ]]; then
 	sdk=$("$FLATPAK" info "$app_id" 2>/dev/null | awk -F': *' '/^[[:space:]]*Sdk:/ {print $2}')
-	SDK_SKIP_PATTERNS=(
-		"org.kde.Sdk/*/6.*"
-	)
+	SDK_SKIP_PATTERNS=( )
 
 	override_gl_driver=1
 	for pattern in "${SDK_SKIP_PATTERNS[@]}"; do
@@ -86,6 +84,7 @@ if [[ -n "$app_id" ]]; then
 
 	if [[ $override_gl_driver -eq 1 ]]; then
 		export FLATPAK_GL_DRIVERS="hybris"
+		export QSG_RHI_BACKEND="vulkan"
 	fi
 fi
 
