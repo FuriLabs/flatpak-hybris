@@ -23,8 +23,12 @@ fi
 # asahi has a similar approach to bwrap: https://pagure.io/fedora-asahi/mesa-asahi-flatpak/blob/24.08/f/bwrapwrapper
 for i in "${!args[@]}"; do
     case "${args[i]}" in
-        --unshare-net|--unshare-user|--disable-userns|--unshare-pid|--unshare-all)
+        --unshare-net|--unshare-user|--disable-userns|--unshare-pid|--unshare-all|--assert-userns-disabled)
             unset 'args[i]'
+            ;;
+
+        --userns|--pidns)
+            unset 'args[i]' 'args[i+1]'
             ;;
     esac
 done
