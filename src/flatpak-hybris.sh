@@ -103,7 +103,7 @@ exec ${FLATPAK} \
 	--filesystem=/mnt:ro \
 	--filesystem=/data:ro \
 	--device=all \
-	--env=LD_PRELOAD=libtls-padding.so:libglesshadercache.so \
+	--env=LD_PRELOAD=libglesshadercache.so \
 	--env=HYBRIS_EGLPLATFORM_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris \
 	--env=HYBRIS_VULKANPLATFORM_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris \
 	--env=HYBRIS_LINKER_DIR=/usr/lib/${TRIPLET}/GL/hybris/${LIBDIR}/libhybris/linker \
