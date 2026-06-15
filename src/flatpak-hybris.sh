@@ -72,6 +72,10 @@ fi
 if [[ -n "$app_id" ]]; then
 	override_gl_driver=1
 
+	if [[ "$app_id" == "org.telegram.desktop" ]]; then
+		override_gl_driver=0
+	fi
+
 	if [ "${#SDK_SKIP_PATTERNS[@]}" -gt 0 ]; then
 		sdk=$("$FLATPAK" info "$app_id" 2>/dev/null | awk -F': *' '/^[[:space:]]*Sdk:/ {print $2}')
 		for pattern in "${SDK_SKIP_PATTERNS[@]}"; do
